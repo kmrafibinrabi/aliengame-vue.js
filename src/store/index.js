@@ -5,6 +5,8 @@ export default createStore({
     uiState: 'start',
     characterChoices: ['baker', 'mechanic', 'artist'],
     character: '',
+    questionIndex :0,
+    score: 0,
     questions : [
       {
         question: `What's your dog's name?`,
@@ -47,9 +49,23 @@ export default createStore({
   getters: {
   },
   mutations: {
+    pickCharacter(state, character) {
+      state.character = character
+    },
+    updateUIState(state, uistate) {
+      state.uiState = uistate
+    },
+    pickQuestion(state, character){
+character === state.character ? state.score += 10 : state.score -= 10
+if(state.questionIndex < state.questions.length -1){
+  state.questionIndex ++
+}
+    }
   },
-  actions: {
-  },
-  modules: {
-  }
+
+
+  // actions: {
+  // },
+  // modules: {
+  // }
 })
