@@ -15,29 +15,39 @@
       <button @click="pickCharacter">Pick your Character!</button>
     </GamestateStart>
 
-    <section v-else>
+    <section v-else-if="uiState === 'characterChosen'">
       <svg viewBox="0 -180 1628 1180" class="main">
         <defs>
           <clipPath id="bottom-clip">
-            <rect class="bottom-clip-path" x="1131.5" y="546.5" width="406" height="1000" />
+            <rect
+              class="bottom-clip-path"
+              x="1131.5"
+              y="546.5"
+              width="406"
+              height="1000"
+            />
           </clipPath>
           <clipPath id="top-clip">
-            <rect class="top-clip-path" x="1131.5" y="69.5" width="406" height="473" />
+            <rect
+              class="top-clip-path"
+              x="1131.5"
+              y="69.5"
+              width="406"
+              height="473"
+            />
           </clipPath>
         </defs>
 
         <Friend />
         <Score />
-        <Artist />
-        <Baker />
-        <Mechanic />
-        <Zombie />
-        <component :is="character"></component>
+
+        <component :is="character" class="character-clip"></component>
+        <Zombie class="zombie-clip" />
 
         <text
           x="1000"
           y="930"
-          style="font: normal 45px 'Recursive'; text-transform: uppercase;"
+          style="font: normal 45px 'Recursive; text-transform: uppercase;"
           class="text"
         >
           {{ character }}
@@ -77,13 +87,15 @@
       </div>
 
       <div class="zombietalk">
-        <p v-for="character in shuffle (characterChoices)" :key="character">
-          <button @click="pickQuestion(character)" >
+        <p v-for="character in shuffle(characterChoices)" :key="character">
+          <button @click="pickQuestion(character)">
             {{ questions[questionIndex][character] }}
           </button>
         </p>
       </div>
     </section>
+
+    <GamestateFinish v-else />
   </div>
 </template>
 
@@ -96,8 +108,9 @@ import Mechanic from './components/Mechanic.vue';
 import Score from './components/Score.vue';
 import Zombie from './components/Zombie.vue';
 import { mapState } from 'vuex';
-import GamestateStart from './GamestateStart.vue';
+import GamestateStart from './GamestateStart.vue';  
 import { shuffle } from 'gsap';
+import GamestateFinish from './components/GamestateFinish.vue';
 
 
 
@@ -110,6 +123,7 @@ export default {
     Mechanic,
     Score,
     Zombie,
+    GamestateFinish
 
   },
   data() {
@@ -119,7 +133,7 @@ export default {
   },
   computed: {
     ...mapState([
-      "uiState", "questions", 'characterChoices', 'character', 'questionIndex']),
+      "uiState", "questions", 'characterChoices', 'character', 'questionIndex','Score']),
   },
   methods: {
     pickCharacter() {
@@ -137,6 +151,14 @@ export default {
         [array[i], array[j]] = [array[j], array[i]];
       }
       return array;
+    },
+  },
+  watch: {
+    score(newValue, oldValue) {
+      console.log(oldValue)
+      gsap.to(".bottom-clip-path, .top-clip-path", {
+        y: -newValue * 6,
+      })
     },
   },
 }

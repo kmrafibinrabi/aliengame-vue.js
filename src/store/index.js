@@ -67,9 +67,12 @@ else {
     }
   },
 
-
-}
-,
+  restartGame(state) {
+    state.uiState = "start"
+    state.score = 0
+    state.questionIndex = 0
+  },
+},
 
 
   // actions: {
